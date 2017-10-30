@@ -17,7 +17,6 @@ private:
 	friend class Iterator;
 };
 
-
 class List { 
 public:
 	List(); 
@@ -37,7 +36,6 @@ private:
 	Link* last;
 };
 
-
 class Iterator {
 public:
 	Iterator();
@@ -54,19 +52,16 @@ Link::Link(int n){
 	previous = NULL;
 	next = NULL;
 }
-
 List::List(){
 	first = NULL;
 	last = NULL;	
 }
-
 bool List::empty() const {
 	if(first == NULL && last == NULL) 
 		return true;
 	else
 		return false;
 }
-
 void List::push_back(int x) { //pushes a number into the last part of the list
 	Link* new_link = new Link(x);
 	if(last == NULL)
@@ -81,7 +76,6 @@ void List::push_back(int x) { //pushes a number into the last part of the list
 		last = new_link;
 	}
 }
-
 void List::push_front(int x) { //pushes a number into the first part of the list
 	Link* new_link = new Link(x);
 	if(last == NULL)
@@ -121,19 +115,16 @@ void List::insert(Iterator iter, int x){ //pushes a number into a specific part 
 	else
 		before->next = new_link;
 }
-
 Iterator::Iterator(){
 	position = NULL;
 	container = NULL;
 }
-
 Iterator List::begin(){ //returns first part of the list
 	Iterator iter;
 	iter.position = first;
 	iter.container = this;
 	return iter;
 }
-
 Iterator List::end(){ //returns last part of the list
 	Iterator iter;
 	iter.position = NULL;
@@ -148,7 +139,6 @@ int & Iterator::operator*(){ //outputs what the iterator is pointing to
 	assert(position != NULL);
 	return position->data;
 }
-
 Iterator List::erase(Iterator iter){ //remove a specific part of the list
 	Link* remove = iter.position;
 	Link* before = remove->previous;
@@ -168,42 +158,118 @@ Iterator List::erase(Iterator iter){ //remove a specific part of the list
 	return r; //moves the iterator forward to keep it from being NULL
 }
 int List::size(){ //return the size of the list
-	Iterator iter;
-	int i = 1;
-	iter.position = first;
-	while(iter.position!=last){
-		++i;
-		++iter;
+	Link * link = first;
+	int count = 0;
+	while (link != NULL) {
+		++count;
+		link = link->next;
 	}
-	return i; 
+	return count;
+}
+
+void test1(){ //tests push back and push front
+	List a;
+	assert(a.empty() == true);
+	a.push_back(29);
+	assert(a.empty() == false);
+	Iterator it;
+	it = a.begin();
+	assert(a.size() == 1);
+	a.push_front(3);
+	a.push_back(9);
+	assert(*it = 29);
+	it = a.begin();
+	assert(*it = 3);
+	a.erase(it);
+	it = a.begin();
+	assert(*it = 29);
+	a.push_back(7);
+	++it;
+	a.insert(it, 5);
+	it = a.begin();
+	assert(*it = 5);
+	++it;
+	assert(*it = 29);
+}
+void test2(){ //tests erase and insert
+	List b;
+	b.push_back(20);
+	Iterator it;
+	it = b.begin();
+	b.push_front(29);
+	assert(*it = 20);
+	it = b.begin();
+	assert(*it = 29);
+	b.erase(it);
+	it = b.begin();
+	assert(*it = 20);
+	b.insert(it, 21);
+	assert(*it = 21);
+	it = b.begin();
+	assert(*it = 20);
+}
+void test3() {//tests erasing the first number of a list
+	List c;
+	c.push_back(5);
+	c.push_back(7);
+	c.push_back(9);
+	Iterator it;
+	it = c.begin();
+	c.erase(it);
+	it = c.begin();
+	assert(*it = 7);
+	++it;
+	assert(*it = 9);
+}
+void test4(){//tests erasing the middle number of a list
+	List d;
+	d.push_back(5);	
+	d.push_back(7);
+	d.push_back(9);
+	Iterator it;
+	it = d.begin();
+	++it;
+	d.erase(it);
+	it = d.begin();
+	assert(*it = 5);
+	++it;
+	assert(*it = 9);
+}
+void test5(){//tests erasing the last number of a list
+	List e;
+	e.push_back(5);	
+	e.push_back(7);
+	e.push_back(9);
+	Iterator it;
+	it = e.begin();
+	++it;
+	++it;
+	e.erase(it);
+	it = e.begin();
+	assert(*it = 5);
+	++it;
+	assert(*it = 7);
+	++it;
+}
+void test6(){ //size function test
+	List f;
+	assert(f.size() == 0);
+	f.push_back(5);
+	assert(f.size() == 1);
+	f.push_back(7);
+	assert(f.size() == 2);
+	f.push_back(9);
+	assert(f.size() == 3);
+	
 }
 
 int main() { //tests
-	List a;
-	assert(a.empty() == true);
-	a.push_back(17);
-	assert(a.empty() == false);
-	a.push_front(3);
-	a.push_back(10);
-	assert(a.size() == 3);
-	Iterator it = a.begin();	
-	assert(*it == 3);
-	++it;
-	assert(*it == 17);
-	++it;
-	assert(*it == 10);
-	it = a.begin();
-	assert(*it == 3);
-	*it += 1;
-	assert(*it == 4);
-	++it;
-	a.insert(it, 29);
-	it = a.begin();
-	cout << *it << endl;
-	++it;
-	cout << *it << endl;
-	++it;
-	cout << *it << endl;
-	++it;
+	test1();
+	test2();
+	test3();
+	test4();
+	test5();
+	test6();
+		
 	cout << "All tests passed." << endl;
 }
