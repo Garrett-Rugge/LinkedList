@@ -12,7 +12,6 @@ public:
 private:
 	int data;
 	Link* next;
-	Link* previous;
 	friend class List;
 	friend class Iterator;
 };
@@ -33,7 +32,6 @@ public:
 	void insert(Iterator iter, int x);
 private:
 	Link* first;
-	Link* last;
 };
 
 class Iterator {
@@ -49,54 +47,53 @@ private:
 
 Link::Link(int n){
 	data = n;
-	previous = NULL;
 	next = NULL;
 }
 List::List(){
-	first = NULL;
-	last = NULL;	
+	first = NULL;	
 }
 bool List::empty() const {
-	if(first == NULL && last == NULL) 
+	if(first == NULL) 
 		return true;
 	else
 		return false;
 }
 void List::push_back(int x) { //pushes a number into the last part of the list
 	Link* new_link = new Link(x);
-	if(last == NULL)
+	Link* linkptr = first;
+	if(first == NULL)
 	{
 		first = new_link;
-		last = new_link;
 	}
 	else
 	{
-		new_link->previous = last;
-		last->next = new_link;
-		last = new_link;
+		while(linkptr->next!=NULL){
+			linkptr = linkptr->next;
+		}
+		linkptr->next = new_link;
 	}
 }
 void List::push_front(int x) { //pushes a number into the first part of the list
 	Link* new_link = new Link(x);
-	if(last == NULL)
+	if(first == NULL)
 	{
 		first = new_link;
-		last = new_link;
 	}
 	else
 	{
 		new_link->next = first;
-		first->previous = new_link;
 		first = new_link;
 	}
 }
 void List::pop_back(){ //removes the last part of the list
-	last = last->previous;
-	last->next = NULL;
+	Link * link;
+	while(link!=NULL){
+		link->next;
+	}
+	link->next = NULL;
 }
 void List::pop_front(){ //removes the first part of the list
 	first = first->next;
-	first->previous = NULL;
 }
 void List::insert(Iterator iter, int x){ //pushes a number into a specific part of the list
 	if(iter.position == NULL) //skips un-needed steps if the list is empty
@@ -105,30 +102,22 @@ void List::insert(Iterator iter, int x){ //pushes a number into a specific part 
 		return;
 	}
 	Link* after = iter.position;
-	Link* before = after->previous;
 	Link* new_link = new Link(x); 
-	new_link->previous = before;
 	new_link->next = after;
-	after->previous = new_link;
-	if(before == NULL)
+	if(first == NULL)
 		first = new_link;
-	else
-		before->next = new_link;
 }
 Iterator::Iterator(){
 	position = NULL;
-	container = NULL;
 }
 Iterator List::begin(){ //returns first part of the list
 	Iterator iter;
 	iter.position = first;
-	iter.container = this;
 	return iter;
 }
 Iterator List::end(){ //returns last part of the list
 	Iterator iter;
 	iter.position = NULL;
-	iter.container = this;
 	return iter;
 }
 void Iterator::operator++() { //moves iterator to next part of the list
@@ -141,21 +130,10 @@ int & Iterator::operator*(){ //outputs what the iterator is pointing to
 }
 Iterator List::erase(Iterator iter){ //remove a specific part of the list
 	Link* remove = iter.position;
-	Link* before = remove->previous;
-	Link*  after = remove->next;
+	Link* after = remove->next;
 	if(remove == first)
 		first = after;
-	else
-		before->next = after;
-	if(remove == last)
-		last = before;
-	else
-		after->previous = before;
 	delete remove;
-	Iterator r;
-	r.position = after;
-	r.container = this;
-	return r; //moves the iterator forward to keep it from being NULL
 }
 int List::size(){ //return the size of the list
 	Link * link = first;
@@ -166,7 +144,6 @@ int List::size(){ //return the size of the list
 	}
 	return count;
 }
-
 void test1(){ //tests push back and push front
 	List a;
 	assert(a.empty() == true);
@@ -176,19 +153,11 @@ void test1(){ //tests push back and push front
 	it = a.begin();
 	assert(a.size() == 1);
 	a.push_front(3);
-	a.push_back(9);
 	assert(*it = 29);
 	it = a.begin();
 	assert(*it = 3);
 	a.erase(it);
 	it = a.begin();
-	assert(*it = 29);
-	a.push_back(7);
-	++it;
-	a.insert(it, 5);
-	it = a.begin();
-	assert(*it = 5);
-	++it;
 	assert(*it = 29);
 }
 void test2(){ //tests erase and insert
@@ -210,8 +179,8 @@ void test2(){ //tests erase and insert
 }
 void test3() {//tests erasing the first number of a list
 	List c;
-	c.push_back(5);
 	c.push_back(7);
+	c.push_front(5);
 	c.push_back(9);
 	Iterator it;
 	it = c.begin();
@@ -259,8 +228,7 @@ void test6(){ //size function test
 	f.push_back(7);
 	assert(f.size() == 2);
 	f.push_back(9);
-	assert(f.size() == 3);
-	
+	assert(f.size() == 3);	
 }
 
 int main() { //tests
@@ -270,6 +238,6 @@ int main() { //tests
 	test4();
 	test5();
 	test6();
-		
+	
 	cout << "All tests passed." << endl;
 }
