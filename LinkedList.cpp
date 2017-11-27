@@ -178,6 +178,18 @@ void test2(){ //tests iterator functions
 	++it;
 	assert(*it == 10);
 }
+void test3(){ //tests size function
+	List c;
+	assert(c.size() == 0);
+	c.push_back(5);
+	assert(c.size() == 1);
+	c.push_back(6);
+	assert(c.size() == 2);
+	c.push_back(7);
+	assert(c.size() == 3);
+}
+
+
 int main() { //tests
 	test1();
 	test2();
