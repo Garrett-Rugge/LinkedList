@@ -89,6 +89,7 @@ void List::pop_back(){ //removes the last part of the list
 	while(link!=NULL){
 		link->next;
 	}
+	delete link->next;
 	link->next = NULL;
 }
 void List::pop_front(){ //removes the first part of the list
