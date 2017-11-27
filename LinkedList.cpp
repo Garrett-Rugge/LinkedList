@@ -173,8 +173,7 @@ void test2(){ //tests iterator functions
 	++it;
 	++it;	
 	b.erase(it);
-	it = b.
-		begin();
+	it = b.begin();
 	++it;
 	++it;
 	assert(*it == 10);
