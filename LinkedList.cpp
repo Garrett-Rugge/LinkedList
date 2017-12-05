@@ -193,6 +193,7 @@ void test3(){ //tests size function
 int main() { //tests
 	test1();
 	test2();
+	test3();
 	
 	cout << "All tests passed." << endl;
 }
